@@ -44,6 +44,7 @@ type Session struct {
 	id       string
 	secure   bool
 	hijacked bool
+	noMitm   bool
 	conn     net.Conn
 	brw      *bufio.ReadWriter
 	vals     map[string]interface{}
@@ -173,6 +174,22 @@ func (s *Session) Set(key string, val interface{}) {
 	defer s.mu.Unlock()
 
 	s.vals[key] = val
+}
+
+// SkipMitm skips MITM proxy
+func (s *Session) SkipMitm() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	s.noMitm = true
+}
+
+// SkipMitm skips MITM proxy
+func (s *Session) IsSkippingMitm() bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	return s.noMitm
 }
 
 // Session returns the session for the context.

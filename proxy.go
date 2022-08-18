@@ -305,7 +305,7 @@ func (p *Proxy) handleConnectRequest(ctx *Context, req *http.Request, session *S
 		return nil
 	}
 
-	if p.mitm != nil {
+	if p.mitm != nil && !session.IsSkippingMitm() {
 		log.Debugf("martian: attempting MITM for connection: %s / %s", req.Host, req.URL.String())
 
 		res := proxyutil.NewResponse(200, nil, req)
